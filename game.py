@@ -8,9 +8,9 @@ class Game :
         self.background = pygame.image.load("Asset/lol.png")
         self.background1_coordinate = (0,0)
         self.background2_coordinate = (-width,0)
-        self.background_speed = 1
+        self.background_speed = 20
 
-        self.clock = pygame.Clock.tick()
+        self.clock = pygame.time.Clock()
 
         self.dt = self.clock.tick(60) / 1000
 
