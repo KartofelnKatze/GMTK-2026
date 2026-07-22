@@ -1,5 +1,8 @@
 import pygame
 
+SCREEN_HEIGHT = 720
+SCREEN_WIDTH = 1280
+
 class Button :
     def __init__(self,x : float,y : float, label : str) :
         self.coordinate = (x,y)
@@ -55,6 +58,8 @@ class Menu :
             Button(495,350,"Options"),
             Button(495,500,"Quit")
         ]
+        self.title = "GMTK 2026 "
+        self.font = pygame.font.Font(None, 36)
         self.game_start = False
         self.options = OptionsMenu()
 
@@ -70,6 +75,9 @@ class Menu :
         self.options.update(events)
 
     def Draw(self, surface : pygame.Surface) :
+        text_surface = self.font.render(self.title, True, (255, 255, 255))
+        text_width = text_surface.get_width()
+        surface.blit(text_surface,(SCREEN_WIDTH/2-text_width/2,100))
         if not self.game_start and not self.options.active:
             for button in self.buttons :
                 button.Draw(surface)
