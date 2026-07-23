@@ -8,7 +8,7 @@ SCREEN_WIDTH = 1280
 
 class RestartMenu :
     def __init__(self) :
-        button = menu.Button(552.5,322.5,"Restart")
+        button = menu.Button(552.5,322.5,"Next Day")
         button.width = 175
         button.height = 75
         self.buttons = [
@@ -20,8 +20,8 @@ class RestartMenu :
         if self.active :
             for button in self.buttons :
                 if(button.clicked(events)) :
-                    if button.label == "Restart" :
-                        level.reset()
+                    if button.label == "Next Day" :
+                        level.NextDay()
                         self.active = False
 
     def Draw(self, surface : pygame.Surface) :
@@ -47,6 +47,10 @@ class AnnoyanceBar :
         pygame.draw.rect(surface,(255,255,255,255),rect_white)
         pygame.draw.rect(surface,(255,0,0,255),rect_red)
         pygame.draw.rect(surface, (0,0,0,255), rect_border,5)
+        text_surface = self.font.render(self.string, True, (0, 0, 0))
+        text_height = text_surface.get_height()
+        surface.blit(text_surface, (self.position[0],
+                                    self.position[1]-text_height))
 
 class Game :
     def __init__(self, width : float, height : float) :
