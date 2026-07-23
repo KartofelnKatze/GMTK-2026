@@ -27,7 +27,7 @@ while running:
     screen.fill("black")
     if game_start :
         main_game.Draw(screen)
-        main_game.Scrolling()
+        main_game.update(events)
     else :
         main_menu.Draw(screen)
         main_menu.update(events)
