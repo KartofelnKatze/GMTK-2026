@@ -61,7 +61,7 @@ class Level :
     def ConfigLevel(self) :
         match self.day :
             case 1 :
-                self.timelapse = 4
+                self.timelapse = 10
                 self.qte_combination = [
                     qte.qte(["a","z","e"],self.timelapse),
                     qte.qte(["q","s","d"],self.timelapse),

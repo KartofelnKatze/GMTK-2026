@@ -98,7 +98,7 @@ class Game :
             self.level.background2_coordinate = (self.width,0)
 
     def UpdateQTE(self, events) :
-        index = self.level.timer.current//self.level.time_interval-1
+        index = int(self.level.timer.time_passed//self.level.time_interval-1)
         if index >= 0 :
             self.level.qte_combination[index].activate() 
         for qte in self.level.qte_combination :

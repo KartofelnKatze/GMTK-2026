@@ -2,7 +2,7 @@ import pygame
 import clock
 
 class qte:
-    def init(self, lst, timelapse):
+    def __init__(self, lst, timelapse):
         self.lst = lst
         self.dico = {key : False for key in self.lst}
         self.timelapse = timelapse
@@ -26,7 +26,7 @@ class qte:
         return self.dico.valeus() == [True for i in range(3)] 
 
     def TimeEnd(self) :
-        if self.internal_clock.current > self.timelapse :
+        if self.internal_clock.time_passed > self.timelapse :
             return True
         return False
     
@@ -36,7 +36,8 @@ class qte:
             self.active = True
 
     def Update(self,events) :
-        if self.activate :
+        if self.active :
+            self.internal_clock.update()
             self.Check(events)
             if self.TimeEnd() :
                 self.internal_clock.stop()
@@ -44,5 +45,7 @@ class qte:
 
     def Draw(self, surface : pygame.Surface, position : tuple) :
         if self.active :
+            print("print")
             text_surface = self.font.render("Press !", True, (255, 255, 255))
-            surface.blit(text_surface,(position[0],position[1]))
+            text_height = text_surface.get_height()
+            surface.blit(text_surface,(position[0],position[1]-text_height))
