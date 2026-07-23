@@ -31,6 +31,7 @@ while running:
     else :
         main_menu.Draw(screen)
         main_menu.update(events)
+    
     # flip() the display to put your work on screen
     pygame.display.flip()
 

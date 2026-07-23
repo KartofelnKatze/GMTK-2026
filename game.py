@@ -6,6 +6,12 @@ import player
 SCREEN_HEIGHT = 720
 SCREEN_WIDTH = 1280
 
+def ResetDay(restart_menu, level, player):
+    level.NextDay()
+    player.Reset()
+    restart_menu.active = False
+    level.timer.__init__()
+
 class RestartMenu :
     def __init__(self) :
         button = menu.Button(552.5,322.5,"Next Day")
@@ -16,13 +22,12 @@ class RestartMenu :
         ]
         self.active = False
 
-    def update(self, events, level) :
+    def update(self, events, level, player) :
         if self.active :
             for button in self.buttons :
                 if(button.clicked(events)) :
                     if button.label == "Next Day" :
-                        level.NextDay()
-                        self.active = False
+                        ResetDay(self, level, player)
 
     def Draw(self, surface : pygame.Surface) :
         if self.active :
@@ -73,48 +78,50 @@ class Game :
         self.font = pygame.font.Font(None, 26)
 
     def Scrolling(self) :
-        self.background1_coordinate = (
-            self.background1_coordinate[0] - self.background_speed*self.dt,
-            self.background1_coordinate[1]
+        self.level.background1_coordinate = (
+            self.level.background1_coordinate[0] - self.background_speed*self.dt,
+            self.level.background1_coordinate[1]
         )
-        self.background2_coordinate = (
-            self.background2_coordinate[0] - self.background_speed*self.dt,
-            self.background2_coordinate[1]
+        self.level.background2_coordinate = (
+            self.level.background2_coordinate[0] - self.background_speed*self.dt,
+            self.level.background2_coordinate[1]
         )
 
+    
     def UpdateBackground(self) :
-        if(self.background1_coordinate[0] + self.width < 0) :
+        if(self.level.background1_coordinate[0] + self.width < 0) :
             self.level.bg1_cursor += 1
             self.background1_image = self.level.background_images[self.level.bg1_cursor]
-            self.background1_coordinate = (self.width,0)
-        if(self.background2_coordinate[0] + self.width < 0) :
+            self.level.background1_coordinate = (self.width,0)
+        if(self.level.background2_coordinate[0] + self.width < 0) :
             self.level.bg2_cursor += 1
             self.background2_image = self.level.background_images[self.level.bg2_cursor]
-            self.background2_coordinate = (self.width,0)
+            self.level.background2_coordinate = (self.width,0)
 
     def update(self, events) :
         self.dt = self.clock.tick(60) / 1000
         self.level.timer.update()
         self.UpdateBackground()
         self.player.update(self.dt)
-        self.restart_menu.update(events, self.level)
-        if not self.level.level_end() :
-            if self.player.MaxReached() and not self.level.TimerEnd():
+        self.restart_menu.update(events, self.level, self.player)
+        if self.player.MaxReached() and not self.level.level_end():
+            if not self.level.TimerEnd() :
                 self.Scrolling()
-                if not self.level.timer.run_state :
-                    self.level.timer.start()
-        else :
-            self.restart_menu.active = True
+            if not self.level.timer.run_state :
+                self.level.timer.start()
+        self.DayEnd()
 
     def InitBackground(self) :
         self.background1_image = self.level.background_images[self.level.bg1_cursor]
         self.background2_image = self.level.background_images[self.level.bg2_cursor]
-        self.background1_coordinate = (0,0)
-        self.background2_coordinate = (self.width,0)
+
+    def DayEnd(self) :
+        if self.level.TimerEnd() :
+            self.restart_menu.active = True
 
     def Draw(self, surface : pygame.Surface) :
-        surface.blit(self.background1_image,self.background1_coordinate)
-        surface.blit(self.background2_image,self.background2_coordinate)
+        surface.blit(self.background1_image,self.level.background1_coordinate)
+        surface.blit(self.background2_image,self.level.background2_coordinate)
         self.restart_menu.Draw(surface)
         self.player.Draw(surface)
         self.annoyance_bar.Draw(surface)
