@@ -70,6 +70,8 @@ class Game :
 
         self.dt = self.clock.tick(60) / 1000
 
+        self.font = pygame.font.Font(None, 26)
+
     def Scrolling(self) :
         self.background1_coordinate = (
             self.background1_coordinate[0] - self.background_speed*self.dt,
@@ -92,12 +94,15 @@ class Game :
 
     def update(self, events) :
         self.dt = self.clock.tick(60) / 1000
+        self.level.timer.update()
         self.UpdateBackground()
         self.player.update(self.dt)
         self.restart_menu.update(events, self.level)
         if not self.level.level_end() :
-            if self.player.MaxReached() :
+            if self.player.MaxReached() and not self.level.TimerEnd():
                 self.Scrolling()
+                if not self.level.timer.run_state :
+                    self.level.timer.start()
         else :
             self.restart_menu.active = True
 
@@ -113,3 +118,4 @@ class Game :
         self.restart_menu.Draw(surface)
         self.player.Draw(surface)
         self.annoyance_bar.Draw(surface)
+        self.level.Draw(surface)
