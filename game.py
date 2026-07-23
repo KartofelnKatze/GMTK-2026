@@ -2,6 +2,7 @@ import pygame
 import level
 import menu
 import player
+import qte
 
 SCREEN_HEIGHT = 720
 SCREEN_WIDTH = 1280
@@ -61,17 +62,15 @@ class Game :
     def __init__(self, width : float, height : float) :
         self.width = width
         self.height = height
-
+        #Class instanciation
         self.level = level.Level()
         self.restart_menu = RestartMenu()
         self.annoyance_bar = AnnoyanceBar()
+        self.player = player.Player()
+        self.clock = pygame.time.Clock()
 
         self.InitBackground()
         self.background_speed = 50
-
-        self.player = player.Player()
-
-        self.clock = pygame.time.Clock()
 
         self.dt = self.clock.tick(60) / 1000
 
@@ -98,10 +97,18 @@ class Game :
             self.background2_image = self.level.background_images[self.level.bg2_cursor]
             self.level.background2_coordinate = (self.width,0)
 
+    def UpdateQTE(self, events) :
+        index = self.level.timer.current//self.level.time_interval-1
+        if index >= 0 :
+            self.level.qte_combination[index].activate() 
+        for qte in self.level.qte_combination :
+            qte.Update(events)
+
     def update(self, events) :
         self.dt = self.clock.tick(60) / 1000
         self.level.timer.update()
         self.UpdateBackground()
+        self.UpdateQTE(events)
         self.player.update(self.dt)
         self.restart_menu.update(events, self.level, self.player)
         if self.player.MaxReached() and not self.level.level_end():
@@ -126,3 +133,5 @@ class Game :
         self.player.Draw(surface)
         self.annoyance_bar.Draw(surface)
         self.level.Draw(surface)
+        for qte in self.level.qte_combination :
+            qte.Draw(surface,self.player.position)
